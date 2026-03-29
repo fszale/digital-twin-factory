@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/twin-package.schema.json",
+  "title": "Twin Package Manifest",
+  "type": "object",
+  "required": [
+    "manifest_version",
+    "twin_version",
+    "twin_id",
+    "display_name",
+    "owner_name",
+    "owner_role",
+    "description",
+    "analysis_only",
+    "capabilities",
+    "accepted_inputs",
+    "produced_outputs",
+    "default_model_profiles",
+    "default_budget_policy",
+    "memory_policy"
+  ],
+  "properties": {
+    "manifest_version": { "type": "string" },
+    "twin_version": { "type": "string" },
+    "twin_id": { "type": "string" },
+    "display_name": { "type": "string" },
+    "owner_name": { "type": "string" },
+    "owner_role": { "type": "string" },
+    "description": { "type": "string" },
+    "analysis_only": { "const": true },
+    "capabilities": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "accepted_inputs": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "produced_outputs": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "default_model_profiles": { "type": "object" },
+    "default_budget_policy": {
+      "type": "object",
+      "required": ["daily_token_limit", "allowed_models"],
+      "properties": {
+        "daily_token_limit": { "type": "number", "minimum": 1 },
+        "allowed_models": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    },
+    "memory_policy": {
+      "type": "object",
+      "required": ["portable_memory_exportable", "factory_memory_exportable"],
+      "properties": {
+        "portable_memory_exportable": { "type": "boolean" },
+        "factory_memory_exportable": { "type": "boolean" },
+        "promotion_requires_review": { "type": "boolean" }
+      }
+    }
+  }
+}

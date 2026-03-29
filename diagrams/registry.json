@@ -1,0 +1,22 @@
+{
+  "diagrams": [
+    {
+      "id": "factory-system-context",
+      "file": "diagrams/factory-system-context.mmd",
+      "description": "High-level platform context for digital-twin-factory.",
+      "used_in": ["docs/architecture.md"]
+    },
+    {
+      "id": "factory-runtime-flow",
+      "file": "diagrams/factory-runtime-flow.mmd",
+      "description": "Conversation to run to improvement lifecycle.",
+      "used_in": ["docs/architecture.md"]
+    },
+    {
+      "id": "factory-memory-boundaries",
+      "file": "diagrams/factory-memory-boundaries.mmd",
+      "description": "Portable versus factory-scoped memory boundaries.",
+      "used_in": ["docs/architecture.md"]
+    }
+  ]
+}

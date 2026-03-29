@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/twin-deployment.schema.json",
+  "title": "Twin Deployment Overlay",
+  "type": "object",
+  "required": [
+    "deployment_id",
+    "factory_id",
+    "digital_twin_id",
+    "analysis_only",
+    "memory_namespace",
+    "enabled_channels",
+    "allowed_models",
+    "default_model_profile",
+    "budget_policy",
+    "primary_metric",
+    "review_requirements"
+  ],
+  "properties": {
+    "deployment_id": { "type": "string" },
+    "factory_id": { "type": "string" },
+    "digital_twin_id": { "type": "string" },
+    "display_name": { "type": "string" },
+    "analysis_only": { "const": true },
+    "memory_namespace": {
+      "type": "object",
+      "required": ["namespace_key", "portable_memory_enabled", "factory_memory_exportable"],
+      "properties": {
+        "namespace_key": { "type": "string" },
+        "portable_memory_enabled": { "type": "boolean" },
+        "factory_memory_exportable": { "const": false }
+      }
+    },
+    "enabled_channels": { "type": "array", "minItems": 1, "items": { "enum": ["web_chat", "slack"] } },
+    "allowed_models": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "default_model_profile": { "type": "string" },
+    "budget_policy": {
+      "type": "object",
+      "required": ["daily_token_limit", "max_cost_per_day", "alert_at_pct"],
+      "properties": {
+        "daily_token_limit": { "type": "number", "minimum": 1 },
+        "max_cost_per_day": { "type": "number", "minimum": 0 },
+        "alert_at_pct": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "primary_metric": {
+      "type": "object",
+      "required": ["metric_name", "baseline_value", "target_value", "direction", "measurement_method"],
+      "properties": {
+        "metric_name": { "type": "string" },
+        "baseline_value": { "type": "number" },
+        "target_value": { "type": "number" },
+        "direction": { "enum": ["higher_is_better", "lower_is_better"] },
+        "measurement_method": { "type": "string" }
+      }
+    },
+    "review_requirements": { "type": "object" }
+  }
+}

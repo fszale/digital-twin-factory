@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Factory {
+  id          String           @id
+  name        String
+  slug        String           @unique
+  status      String
+  description String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deployments TwinDeployment[]
+}
+
+model DigitalTwin {
+  id               String           @id
+  twinKey          String           @unique
+  displayName      String
+  version          String
+  manifestVersion  String
+  sourceType       String
+  sourceRef        String
+  analysisOnly     Boolean          @default(true)
+  ownerName        String?
+  ownerRole        String?
+  deployments      TwinDeployment[]
+  createdAt        DateTime         @default(now())
+}
+
+model TwinDeployment {
+  id                String               @id
+  deploymentKey     String               @unique
+  displayName       String?
+  status            String
+  analysisOnly      Boolean              @default(true)
+  factoryId         String
+  digitalTwinId     String
+  memoryNamespaceId String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  factory           Factory              @relation(fields: [factoryId], references: [id])
+  digitalTwin       DigitalTwin          @relation(fields: [digitalTwinId], references: [id])
+  conversations     Conversation[]
+  jobs              Job[]
+  runs              Run[]
+  artifacts         Artifact[]
+  roiMetrics        RoiMetric[]
+  roiSnapshots      RoiSnapshot[]
+}
+
+model Conversation {
+  id            String   @id
+  deploymentId  String
+  channelType   String
+  requesterId   String
+  status        String
+  title         String?
+  createdAt     DateTime @default(now())
+  deployment    TwinDeployment @relation(fields: [deploymentId], references: [id])
+  messages      Message[]
+  jobs          Job[]
+}
+
+model Message {
+  id             String   @id
+  conversationId String
+  direction      String
+  authorType     String
+  authorId       String
+  body           String
+  createdAt      DateTime @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model Job {
+  id             String   @id
+  deploymentId   String
+  conversationId String?
+  jobType        String
+  status         String
+  requestSummary String?
+  createdAt      DateTime @default(now())
+  deployment     TwinDeployment @relation(fields: [deploymentId], references: [id])
+  conversation   Conversation?  @relation(fields: [conversationId], references: [id])
+  runs           Run[]
+}
+
+model Run {
+  id              String   @id
+  jobId           String
+  deploymentId    String
+  status          String
+  modelProfile    String?
+  modelName       String?
+  tokenInput      Int?
+  tokenOutput     Int?
+  usefulnessScore Float?
+  scoreConfidence Float?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  job             Job      @relation(fields: [jobId], references: [id])
+  deployment      TwinDeployment @relation(fields: [deploymentId], references: [id])
+}
+
+model Artifact {
+  id           String   @id
+  deploymentId String
+  artifactType String
+  storageUri   String
+  displayName  String?
+  createdAt    DateTime @default(now())
+  deployment   TwinDeployment @relation(fields: [deploymentId], references: [id])
+}
+
+model RoiMetric {
+  id                String   @id
+  deploymentId      String
+  metricName        String
+  direction         String
+  baselineValue     Float
+  targetValue       Float?
+  measurementMethod String?
+  createdAt         DateTime @default(now())
+  deployment        TwinDeployment @relation(fields: [deploymentId], references: [id])
+}
+
+model RoiSnapshot {
+  id                        String   @id
+  deploymentId              String
+  weekStart                 DateTime
+  primaryMetricValue        Float
+  improvementVsBaselinePct  Float
+  weeklyRoiDelta            Float
+  usefulnessScore           Float?
+  usefulCompletionRate      Float?
+  curveClassification       String?
+  dataQualityScore          Float?
+  createdAt                 DateTime @default(now())
+  deployment                TwinDeployment @relation(fields: [deploymentId], references: [id])
+}

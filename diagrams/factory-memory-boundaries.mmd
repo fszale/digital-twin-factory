@@ -1,0 +1,19 @@
+graph TB
+    TWIN["Portable Twin
+identity and approved portable memory"]
+    DEPLOY["Twin Deployment
+factory policy and deployment tuning"]
+    FMEM["Factory Memory Namespace
+transcripts, artifacts, job context"]
+    REVIEW["Promotion Review
+abstract, redact, approve"]
+
+    TWIN --> DEPLOY
+    DEPLOY --> FMEM
+    FMEM --> REVIEW
+    REVIEW -->|"approved generalized learning"| TWIN
+
+    style TWIN fill:#3a2a5c,color:#fff,stroke:#a78bfa
+    style DEPLOY fill:#1a4a2e,color:#fff,stroke:#4ade80
+    style FMEM fill:#4a1a1a,color:#fff,stroke:#f87171
+    style REVIEW fill:#3a3a1a,color:#fff,stroke:#facc15

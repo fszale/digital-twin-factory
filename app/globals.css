@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light;
+  --bg: #f5f1e8;
+  --ink: #18221f;
+  --accent: #0f766e;
+  --muted: #5f6b66;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #f7f3eb 0%, #ece4d6 100%);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 3rem;
+}
+
+.hero {
+  max-width: 48rem;
+}
+
+.eyebrow {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.lead {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
