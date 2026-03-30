@@ -16,5 +16,6 @@ jobs:
           test -f CONTEXT.md
           test -f docs/architecture.md
           test -f prisma/schema.prisma
+          test -f supabase/schema.sql
           test -f schemas/twin-package.schema.json
           test -f schemas/twin-deployment.schema.json

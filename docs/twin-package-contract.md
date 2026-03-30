@@ -86,15 +86,20 @@ produced_outputs:
   - structured_json
   - generated_file
 default_model_profiles:
-  fast: provider/model-fast
-  balanced: provider/model-balanced
-  deep: provider/model-deep
+  fast:
+    provider: xai
+    model: grok-4.2
+  balanced:
+    provider: xai
+    model: grok-4.2
+  deep:
+    provider: xai
+    model: grok-4.2
 default_budget_policy:
   daily_token_limit: 500000
   allowed_models:
-    - provider/model-fast
-    - provider/model-balanced
-    - provider/model-deep
+    - xai/grok-4.2
+    - openai/chatgpt-default
 memory_policy:
   portable_memory_exportable: true
   factory_memory_exportable: false
@@ -175,6 +180,8 @@ Required defaults:
 - preferred model profiles
 - daily token guidance
 - analysis-only confirmation
+
+Each profile should declare both provider and model so a deployment can either inherit or override the preferred runtime cleanly.
 
 ## Import Validation Rules
 

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function HomePage() {
   return (
     <main className="page">
@@ -7,6 +9,13 @@ export default function HomePage() {
         <p className="lead">
           This scaffold is intentionally minimal. The current source of truth is the contract layer in
           <code> docs/</code>, <code>schemas/</code>, and <code>prisma/</code>.
+        </p>
+        <p className="lead">
+          The first operator-facing UI is the{" "}
+          <Link href="/dashboard" className="inline-link">
+            deployment dashboard
+          </Link>
+          .
         </p>
       </section>
     </main>

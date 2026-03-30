@@ -50,6 +50,8 @@ model TwinDeployment {
   jobs              Job[]
   runs              Run[]
   artifacts         Artifact[]
+  summaries         ConversationSummary[]
+  escalations       HitlEscalation[]
   roiMetrics        RoiMetric[]
   roiSnapshots      RoiSnapshot[]
 }
@@ -65,6 +67,8 @@ model Conversation {
   deployment    TwinDeployment @relation(fields: [deploymentId], references: [id])
   messages      Message[]
   jobs          Job[]
+  summaries     ConversationSummary[]
+  escalations   HitlEscalation[]
 }
 
 model Message {
@@ -106,6 +110,59 @@ model Run {
   completedAt     DateTime?
   job             Job      @relation(fields: [jobId], references: [id])
   deployment      TwinDeployment @relation(fields: [deploymentId], references: [id])
+  summaries       ConversationSummary[]
+}
+
+model ConversationSummary {
+  id                   String   @id
+  conversationId       String
+  deploymentId         String
+  sourceRunId          String?
+  summaryType          String
+  content              String
+  openQuestions        String?
+  recommendedNextSteps String?
+  confidenceScore      Float?
+  isHandoffReady       Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  conversation         Conversation @relation(fields: [conversationId], references: [id])
+  deployment           TwinDeployment @relation(fields: [deploymentId], references: [id])
+  sourceRun            Run? @relation(fields: [sourceRunId], references: [id])
+  escalations          HitlEscalation[]
+}
+
+model HitlEscalation {
+  id                   String   @id
+  deploymentId         String
+  conversationId       String
+  jobId                String?
+  runId                String?
+  conversationSummaryId String?
+  status               String
+  reasonCode           String
+  requestedHumanId     String?
+  deliveryStatus       String?
+  responseDueAt        DateTime?
+  createdAt            DateTime @default(now())
+  deployment           TwinDeployment @relation(fields: [deploymentId], references: [id])
+  conversation         Conversation @relation(fields: [conversationId], references: [id])
+  summary              ConversationSummary? @relation(fields: [conversationSummaryId], references: [id])
+  deliveries           NotificationDelivery[]
+}
+
+model NotificationDelivery {
+  id           String   @id
+  subjectType  String
+  subjectId    String
+  channelType  String
+  recipientRef String?
+  status       String
+  sentAt       DateTime?
+  failedAt     DateTime?
+  failureReason String?
+  createdAt    DateTime @default(now())
+  escalationId String?
+  escalation   HitlEscalation? @relation(fields: [escalationId], references: [id])
 }
 
 model Artifact {

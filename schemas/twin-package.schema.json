@@ -31,7 +31,18 @@
     "capabilities": { "type": "array", "minItems": 1, "items": { "type": "string" } },
     "accepted_inputs": { "type": "array", "minItems": 1, "items": { "type": "string" } },
     "produced_outputs": { "type": "array", "minItems": 1, "items": { "type": "string" } },
-    "default_model_profiles": { "type": "object" },
+    "default_model_profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["provider", "model"],
+        "properties": {
+          "provider": { "enum": ["openai", "xai"] },
+          "model": { "type": "string" }
+        }
+      }
+    },
     "default_budget_policy": {
       "type": "object",
       "required": ["daily_token_limit", "allowed_models"],

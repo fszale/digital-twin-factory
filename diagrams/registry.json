@@ -17,6 +17,18 @@
       "file": "diagrams/factory-memory-boundaries.mmd",
       "description": "Portable versus factory-scoped memory boundaries.",
       "used_in": ["docs/architecture.md"]
+    },
+    {
+      "id": "factory-hitl-handoff",
+      "file": "diagrams/factory-hitl-handoff.mmd",
+      "description": "Conversation synthesis and handoff when the real human behind the twin is needed.",
+      "used_in": ["docs/architecture.md"]
+    },
+    {
+      "id": "factory-evaluation-loop",
+      "file": "diagrams/factory-evaluation-loop.mmd",
+      "description": "Evaluation and continuous monitoring loop for the platform.",
+      "used_in": ["docs/evaluation-plan.md"]
     }
   ]
 }

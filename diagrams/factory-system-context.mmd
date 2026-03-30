@@ -1,6 +1,8 @@
 graph TB
     HUMANS["Humans
 web chat and Slack"]
+    AUTH["Supabase Auth
+ platform roles"]
     PLATFORM["digital-twin-factory
 Next.js control plane"]
     TWINS["Portable Twin Packages
@@ -13,6 +15,8 @@ Postgres, object storage"]
 runs, scoring, improvement"]
 
     HUMANS --> PLATFORM
+    HUMANS --> AUTH
+    AUTH --> PLATFORM
     TWINS --> PLATFORM
     PLATFORM --> DEPLOY
     PLATFORM --> STORE
@@ -21,6 +25,7 @@ runs, scoring, improvement"]
     DEPLOY --> STORE
 
     style HUMANS fill:#1a3a5c,color:#fff,stroke:#4a9ede
+    style AUTH fill:#3a3a1a,color:#fff,stroke:#facc15
     style PLATFORM fill:#1a4a2e,color:#fff,stroke:#4ade80
     style TWINS fill:#3a2a5c,color:#fff,stroke:#a78bfa
     style DEPLOY fill:#3a2a5c,color:#fff,stroke:#a78bfa

@@ -92,6 +92,7 @@ The system should learn from both passive and explicit signals.
 - helpful / not helpful
 - short feedback tags
 - operator review outcome
+- HITL escalation outcome
 
 Suggested v1 feedback tags:
 
@@ -238,6 +239,20 @@ Responsibilities:
 - require human approval
 - record abstraction and redaction evidence
 
+### 6. HITL Handoff Synthesis Job
+
+Frequency:
+
+- on escalation creation
+- optionally on run completion for important threads
+
+Responsibilities:
+
+- synthesize the relevant conversation context
+- summarize the request, current state, and blockers
+- extract open questions for the real human behind the twin
+- prepare a handoff packet for dashboard, email, or Slack delivery
+
 ## Evaluation Windows
 
 Use multiple windows to avoid overreacting to noise.
@@ -290,6 +305,25 @@ Every improvement event should record:
 - which signals supported it
 - whether it was auto-applied or human-approved
 - which metrics improved or regressed afterward
+
+## HITL As A Learning Signal
+
+HITL events should be treated as high-value learning inputs.
+
+Useful signals include:
+
+- how often escalation happened
+- why escalation happened
+- whether the synthesized handoff was sufficient
+- how much re-explanation the human had to do
+- whether the human response resolved the thread
+
+Repeated escalation reasons should feed:
+
+- better prompt routing
+- clearer clarification prompts
+- better handoff summaries
+- improved deployment-local response structure
 
 ## UI Requirements
 

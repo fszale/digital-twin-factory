@@ -11,10 +11,11 @@
     "memory_namespace",
     "enabled_channels",
     "allowed_models",
-    "default_model_profile",
+    "model_preferences",
     "budget_policy",
     "primary_metric",
-    "review_requirements"
+    "review_requirements",
+    "human_handoff"
   ],
   "properties": {
     "deployment_id": { "type": "string" },
@@ -33,7 +34,17 @@
     },
     "enabled_channels": { "type": "array", "minItems": 1, "items": { "enum": ["web_chat", "slack"] } },
     "allowed_models": { "type": "array", "minItems": 1, "items": { "type": "string" } },
-    "default_model_profile": { "type": "string" },
+    "model_preferences": {
+      "type": "object",
+      "required": ["preferred_provider", "preferred_model", "preferred_profile"],
+      "properties": {
+        "preferred_provider": { "enum": ["openai", "xai"] },
+        "preferred_model": { "type": "string" },
+        "preferred_profile": { "type": "string" },
+        "fallback_provider": { "enum": ["openai", "xai"] },
+        "fallback_model": { "type": "string" }
+      }
+    },
     "budget_policy": {
       "type": "object",
       "required": ["daily_token_limit", "max_cost_per_day", "alert_at_pct"],
@@ -54,6 +65,21 @@
         "measurement_method": { "type": "string" }
       }
     },
-    "review_requirements": { "type": "object" }
+    "review_requirements": { "type": "object" },
+    "human_handoff": {
+      "type": "object",
+      "required": ["enabled", "notify_channels", "synthesize_conversation"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "notify_channels": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["dashboard", "slack", "email"] }
+        },
+        "synthesize_conversation": { "type": "boolean" },
+        "requested_human_id": { "type": "string" },
+        "response_sla_hours": { "type": "number", "minimum": 0 }
+      }
+    }
   }
 }

@@ -39,3 +39,107 @@ body {
   font-size: 1.05rem;
   line-height: 1.6;
 }
+
+.inline-link {
+  color: var(--accent);
+}
+
+.dashboard-shell {
+  min-height: 100vh;
+  padding: 2.5rem;
+}
+
+.dashboard-header {
+  max-width: 56rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(24, 34, 31, 0.12);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 12px 30px rgba(24, 34, 31, 0.06);
+}
+
+.panel-head,
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.stack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.card {
+  padding: 1rem;
+  border-radius: 0.85rem;
+  background: rgba(245, 241, 232, 0.95);
+  border: 1px solid rgba(24, 34, 31, 0.08);
+}
+
+.badge,
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #d8eee9;
+  color: #0b5e58;
+  font-size: 0.8rem;
+}
+
+.status-pill {
+  background: #efe4c5;
+  color: #725317;
+}
+
+.muted,
+.empty {
+  color: var(--muted);
+}
+
+.flat-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.1rem;
+}
+
+textarea,
+button {
+  font: inherit;
+}
+
+textarea {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(24, 34, 31, 0.16);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 0.75rem;
+  resize: vertical;
+}
+
+button {
+  width: fit-content;
+  border: none;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.92;
+}

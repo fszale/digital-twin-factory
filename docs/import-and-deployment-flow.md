@@ -60,6 +60,7 @@ Deployment creation requires:
 - target factory
 - imported twin id
 - deployment id
+- preferred model provider and model
 - channel selection
 - budget policy
 - primary metric
@@ -79,6 +80,14 @@ For v1, supported channels are:
 - Slack
 
 Each enabled channel should be recorded explicitly in the deployment configuration.
+
+Each deployment should also persist:
+
+- preferred model provider
+- preferred model
+- preferred model profile
+- optional fallback model
+- requested human owner id for HITL routing
 
 ## Step 6: Start Operating
 
@@ -119,6 +128,8 @@ It is a separate reviewed flow that may happen later after deployment operation 
 2. inspect manifest and capabilities
 3. create deployment for a target factory
 4. set baseline metric and budget envelope
-5. enable web chat
-6. optionally enable Slack
-7. monitor usefulness and rate of improvement
+5. set preferred model provider and fallback
+6. assign the real human owner for HITL
+7. enable web chat
+8. optionally enable Slack
+9. monitor usefulness and rate of improvement

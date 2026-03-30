@@ -2,9 +2,11 @@
   "name": "digital-twin-factory",
   "private": true,
   "version": "0.1.0",
+  "type": "module",
   "scripts": {
     "docs:embed": "python3 scripts/embed_diagrams.py",
     "docs:validate": "python3 scripts/validate_repo.py",
-    "prisma:format": "prisma format"
+    "prisma:format": "prisma format",
+    "test": "node --test --experimental-strip-types tests/**/*.test.ts"
   }
 }

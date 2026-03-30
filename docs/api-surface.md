@@ -8,9 +8,11 @@ The API is designed for:
 
 - web control plane
 - Slack integration
+- Supabase-authenticated multi-user access
 - twin package import
 - twin deployment creation
 - conversation and job lifecycle management
+- HITL escalation and synthesized human handoff
 - artifacts, feedback, and improvement metrics
 
 ## Principles
@@ -19,6 +21,26 @@ The API is designed for:
 - keep factory and deployment boundaries explicit
 - make analysis-only enforcement visible in the contract
 - expose enough state for dashboards and background jobs
+- enforce super-admin and twin-owner access boundaries
+
+## Authentication And Authorization
+
+Use Supabase user authentication for human access.
+
+Current access model:
+
+- `super_admin`: can access every deployment
+- `twin_owner`: can access only assigned deployment(s)
+
+Protected routes should:
+
+- resolve the Supabase-authenticated user
+- map that user to `platform_users`
+- check `deployment_access` for deployment-scoped resources
+
+Bootstrap route:
+
+- `POST /api/admin/bootstrap-super-admin` uses `PLATFORM_BOOTSTRAP_SECRET` and does not require prior auth
 
 ## Core Resource Groups
 
@@ -90,8 +112,14 @@ Request body:
   "displayName": "Filip at Acme",
   "analysisOnly": true,
   "enabledChannels": ["web_chat", "slack"],
-  "allowedModels": ["provider/model-balanced", "provider/model-deep"],
-  "defaultModelProfile": "balanced",
+  "allowedModels": ["xai/grok-4.2", "openai/chatgpt-default"],
+  "modelPreferences": {
+    "preferredProvider": "xai",
+    "preferredModel": "grok-4.2",
+    "preferredProfile": "deep",
+    "fallbackProvider": "openai",
+    "fallbackModel": "chatgpt-default"
+  },
   "budgetPolicy": {
     "dailyTokenLimit": 300000,
     "maxCostPerDay": 25.0,
@@ -115,6 +143,14 @@ Return deployment details.
 
 Update deployment policy, budget, or metadata.
 
+#### `GET /api/factories/:factoryId/deployments/:deploymentId/config`
+
+Return runtime deployment config including preferred model provider/model and channel/budget limits.
+
+#### `PATCH /api/factories/:factoryId/deployments/:deploymentId/config`
+
+Upsert the runtime deployment config used by the control plane.
+
 ### Conversations
 
 #### `GET /api/factories/:factoryId/deployments/:deploymentId/conversations`
@@ -133,6 +169,10 @@ Return conversation details and message history.
 
 Append a message and optionally create a job.
 
+#### `GET /api/conversations/:conversationId/summary`
+
+Return the latest synthesized conversation summary and handoff-ready brief.
+
 ### Jobs And Runs
 
 #### `POST /api/conversations/:conversationId/jobs`
@@ -150,6 +190,52 @@ List runs for a job.
 #### `GET /api/runs/:runId`
 
 Return run details including metrics and artifacts.
+
+### HITL Escalations
+
+#### `GET /api/factories/:factoryId/deployments/:deploymentId/escalations`
+
+List active and recent escalations for a deployment.
+
+#### `POST /api/runs/:runId/escalations`
+
+Create a HITL escalation when the real human behind the twin is needed.
+
+Request body:
+
+```json
+{
+  "reasonCode": "human_judgment_required",
+  "notifyChannels": ["dashboard", "slack"],
+  "requestedHumanId": "filip-owner"
+}
+```
+
+#### `GET /api/escalations/:hitlEscalationId`
+
+Return escalation details, synthesized summary, and notification state.
+
+#### `PATCH /api/escalations/:hitlEscalationId`
+
+Resolve, cancel, or otherwise update an escalation.
+
+#### `POST /api/escalations/:hitlEscalationId/notify`
+
+Deliver or redeliver the synthesized handoff packet through configured channels.
+
+### Admin
+
+#### `POST /api/admin/bootstrap-super-admin`
+
+Seed the first `super_admin` using `PLATFORM_BOOTSTRAP_SECRET`.
+
+#### `POST /api/admin/platform-users`
+
+Register or update a platform user record after the user exists in Supabase Auth.
+
+#### `POST /api/admin/deployment-access`
+
+Assign a `twin_owner` to a deployment.
 
 ### Artifacts
 
@@ -224,6 +310,8 @@ These API actions should enqueue background work:
 - message posted -> evaluate whether a job should be created
 - job created -> enqueue run
 - run completed -> enqueue scoring job
+- run completed or escalation triggered -> enqueue conversation summary synthesis
+- escalation created -> enqueue notification delivery
 - scoring completed -> enqueue pattern detection when needed
 - reviewed promotion approved -> enqueue portable memory update
 

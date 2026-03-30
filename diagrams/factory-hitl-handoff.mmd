@@ -1,0 +1,27 @@
+graph LR
+    CHAT["Conversation
+captured as messages"] --> SCORE["Run and Context Analysis"]
+    SCORE --> ESC["HITL Escalation Trigger"]
+    ESC --> SYN["Conversation Summary
+open questions and next steps"]
+    SYN --> DASH["Dashboard Handoff"]
+    SYN --> SLACK["Slack or Email Notification"]
+    ESC --> AUDIT["Escalation State
+ open, resolved, cancelled"]
+    DASH --> HUMAN["Real Human Behind Twin"]
+    SLACK --> HUMAN
+    HUMAN --> RESP["Decision or Follow-Up"]
+    RESP --> LEARN["Learning Signal
+for future improvement"]
+    RESP --> AUDIT
+
+    style CHAT fill:#1a3a5c,color:#fff,stroke:#4a9ede
+    style SCORE fill:#3a3a1a,color:#fff,stroke:#facc15
+    style ESC fill:#4a1a1a,color:#fff,stroke:#f87171
+    style SYN fill:#1a4a2e,color:#fff,stroke:#4ade80
+    style DASH fill:#1a3a5c,color:#fff,stroke:#4a9ede
+    style SLACK fill:#1a3a5c,color:#fff,stroke:#4a9ede
+    style AUDIT fill:#2a2a2a,color:#fff,stroke:#6b7280
+    style HUMAN fill:#3a2a5c,color:#fff,stroke:#a78bfa
+    style RESP fill:#3a2a5c,color:#fff,stroke:#a78bfa
+    style LEARN fill:#2a2a2a,color:#fff,stroke:#6b7280

@@ -39,6 +39,12 @@ def validate_required_files() -> None:
         ROOT / "docs" / "architecture.md",
         ROOT / "docs" / "data-model.md",
         ROOT / "docs" / "api-surface.md",
+        ROOT / "docs" / "evaluation-plan.md",
+        ROOT / "docs" / "continuous-monitoring.md",
+        ROOT / "supabase" / "schema.sql",
+        ROOT / "tests" / "auth.test.ts",
+        ROOT / "tests" / "hitl.test.ts",
+        ROOT / "tests" / "escalation-service.test.ts",
     ]
     for path in required:
         if not path.exists():

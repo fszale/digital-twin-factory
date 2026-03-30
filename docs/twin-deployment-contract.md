@@ -32,13 +32,14 @@ Each deployment must define:
 - `memory_namespace`
 - `enabled_channels`
 - `allowed_models`
-- `default_model_profile`
+- `model_preferences`
 - `daily_token_limit`
 - `max_cost_per_day`
 - `primary_metric_name`
 - `baseline_value`
 - `target_value`
 - `review_requirements`
+- `human_handoff`
 
 ## Recommended Deployment Template
 
@@ -59,11 +60,15 @@ enabled_channels:
   - slack
 
 allowed_models:
-  - provider/model-fast
-  - provider/model-balanced
-  - provider/model-deep
+  - xai/grok-4.2
+  - openai/chatgpt-default
 
-default_model_profile: balanced
+model_preferences:
+  preferred_provider: xai
+  preferred_model: grok-4.2
+  preferred_profile: deep
+  fallback_provider: openai
+  fallback_model: chatgpt-default
 
 budget_policy:
   daily_token_limit: 300000
@@ -81,6 +86,14 @@ review_requirements:
   portable_memory_promotion: required
   policy_change: required
   high_cost_run: required
+
+human_handoff:
+  enabled: true
+  notify_channels:
+    - dashboard
+    - slack
+  synthesize_conversation: true
+  requested_human_id: filip-owner
 ```
 
 ## Required Behavior Rules
@@ -134,6 +147,38 @@ Optional later:
 - weekly and monthly budgets
 - per-model caps
 - per-request caps
+
+### Preferred Model Policy
+
+Each deployment must define a preferred provider/model pair.
+
+Required fields:
+
+- `preferred_provider`
+- `preferred_model`
+- `preferred_profile`
+
+Recommended fields:
+
+- `fallback_provider`
+- `fallback_model`
+
+The platform should reject a deployment if the preferred provider is not supported or if the preferred model is not present in `allowed_models`.
+
+### Human Handoff Policy
+
+Each deployment should define how the real human behind the twin is notified when HITL is required.
+
+Required fields:
+
+- `enabled`
+- `notify_channels`
+- `synthesize_conversation`
+
+Suggested fields:
+
+- `requested_human_id`
+- `response_sla_hours`
 
 ## Primary Metric Contract
 
@@ -201,6 +246,8 @@ That means:
 - improvement candidates belong to the deployment
 
 Portable memory promotion is a separate reviewed step.
+
+HITL escalation summaries belong to the deployment and factory context, not to portable twin memory by default.
 
 ## Relationship To Exports
 
