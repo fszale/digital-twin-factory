@@ -22,11 +22,14 @@ function renderSetupError(message: string) {
 }
 
 export default async function DeploymentDashboardPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ deploymentId: string }>;
+  searchParams: Promise<{ status?: string }>;
 }) {
   const { deploymentId } = await params;
+  const query = await searchParams;
 
   try {
     const access = await requireDeploymentAccessForServerRender(deploymentId);
@@ -47,6 +50,7 @@ export default async function DeploymentDashboardPage({
           <p className="muted">
             Signed in as {access.user.email ?? access.user.authUserId} with role {access.user.platformRole}.
           </p>
+          {query.status ? <p className="notice">{query.status}</p> : null}
         </section>
 
         <section className="dashboard-grid">
@@ -74,6 +78,113 @@ export default async function DeploymentDashboardPage({
             ) : (
               <p className="empty">No deployment config stored yet. Add one through the deployment config API.</p>
             )}
+            <form action={`/dashboard/deployments/${deploymentId}/config`} method="post" className="stack">
+              <label htmlFor="factory-id">Factory id</label>
+              <input
+                id="factory-id"
+                name="factoryId"
+                type="text"
+                required
+                defaultValue={data.deploymentConfig?.factoryId ?? ""}
+              />
+              <label htmlFor="digital-twin-id">Digital twin id</label>
+              <input
+                id="digital-twin-id"
+                name="digitalTwinId"
+                type="text"
+                required
+                defaultValue={data.deploymentConfig?.digitalTwinId ?? ""}
+              />
+              <label htmlFor="display-name">Display name</label>
+              <input id="display-name" name="displayName" type="text" defaultValue={data.deploymentConfig?.displayName ?? ""} />
+              <label htmlFor="preferred-provider">Preferred provider</label>
+              <select
+                id="preferred-provider"
+                name="preferredModelProvider"
+                defaultValue={data.deploymentConfig?.preferredModelProvider ?? "xai"}
+              >
+                <option value="xai">xai</option>
+                <option value="openai">openai</option>
+              </select>
+              <label htmlFor="preferred-model">Preferred model</label>
+              <input
+                id="preferred-model"
+                name="preferredModel"
+                type="text"
+                required
+                defaultValue={data.deploymentConfig?.preferredModel ?? "grok-4.2"}
+              />
+              <label htmlFor="preferred-profile">Preferred profile</label>
+              <input
+                id="preferred-profile"
+                name="preferredModelProfile"
+                type="text"
+                required
+                defaultValue={data.deploymentConfig?.preferredModelProfile ?? "deep"}
+              />
+              <label htmlFor="fallback-provider">Fallback provider</label>
+              <select
+                id="fallback-provider"
+                name="fallbackModelProvider"
+                defaultValue={data.deploymentConfig?.fallbackModelProvider ?? "openai"}
+              >
+                <option value="">none</option>
+                <option value="xai">xai</option>
+                <option value="openai">openai</option>
+              </select>
+              <label htmlFor="fallback-model">Fallback model</label>
+              <input
+                id="fallback-model"
+                name="fallbackModel"
+                type="text"
+                defaultValue={data.deploymentConfig?.fallbackModel ?? "chatgpt-default"}
+              />
+              <label htmlFor="allowed-models">Allowed models (comma separated)</label>
+              <input
+                id="allowed-models"
+                name="allowedModels"
+                type="text"
+                defaultValue={data.deploymentConfig?.allowedModels.join(", ") ?? "xai/grok-4.2, openai/chatgpt-default"}
+              />
+              <label htmlFor="enabled-channels">Enabled channels (comma separated)</label>
+              <input
+                id="enabled-channels"
+                name="enabledChannels"
+                type="text"
+                defaultValue={data.deploymentConfig?.enabledChannels.join(", ") ?? "web_chat, slack"}
+              />
+              <label htmlFor="daily-token-limit">Daily token limit</label>
+              <input
+                id="daily-token-limit"
+                name="dailyTokenLimit"
+                type="number"
+                defaultValue={data.deploymentConfig?.dailyTokenLimit ?? 300000}
+              />
+              <label htmlFor="max-cost-per-day">Max cost per day</label>
+              <input
+                id="max-cost-per-day"
+                name="maxCostPerDay"
+                type="number"
+                step="0.01"
+                defaultValue={data.deploymentConfig?.maxCostPerDay ?? 25}
+              />
+              <label htmlFor="alert-at-pct">Alert at pct</label>
+              <input
+                id="alert-at-pct"
+                name="alertAtPct"
+                type="number"
+                step="0.01"
+                defaultValue={data.deploymentConfig?.alertAtPct ?? 0.8}
+              />
+              <label htmlFor="requested-human-id">Requested human id</label>
+              <input
+                id="requested-human-id"
+                name="requestedHumanId"
+                type="text"
+                defaultValue={data.deploymentConfig?.requestedHumanId ?? ""}
+              />
+              <button type="submit">Save deployment config</button>
+            </form>
           </div>
 
           <div className="panel">

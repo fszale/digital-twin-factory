@@ -27,6 +27,12 @@ The API is designed for:
 
 Use Supabase user authentication for human access.
 
+Current operator sign-in flow:
+
+- `POST /auth/sign-in` exchanges Supabase email/password for access and refresh tokens
+- session cookies are stored as `digital-twin-factory-access-token` and `digital-twin-factory-refresh-token`
+- `POST /auth/sign-out` clears both cookies
+
 Current access model:
 
 - `super_admin`: can access every deployment

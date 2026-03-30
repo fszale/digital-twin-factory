@@ -17,6 +17,17 @@ export default function HomePage() {
           </Link>
           .
         </p>
+        <p className="lead">
+          First-time platform setup starts at{" "}
+          <Link href="/setup" className="inline-link">
+            /setup
+          </Link>
+          , then operators sign in through{" "}
+          <Link href="/login" className="inline-link">
+            /login
+          </Link>
+          .
+        </p>
       </section>
     </main>
   );

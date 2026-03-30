@@ -152,6 +152,7 @@ Key responsibilities:
 - persist deployment runtime config including preferred provider/model and fallback model
 - enforce Supabase-authenticated super-admin and twin-owner access
 - bootstrap the first `super_admin` through a secret-protected control path
+- manage cookie-based operator sessions for the web control plane
 - handle human-facing chat interactions
 - normalize interactions into conversations, jobs, runs, and artifacts
 - enforce policy, budgets, and analysis-only constraints
