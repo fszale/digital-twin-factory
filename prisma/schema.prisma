@@ -27,9 +27,17 @@ model DigitalTwin {
   sourceType       String
   sourceRef        String
   analysisOnly     Boolean          @default(true)
+  description      String?
   ownerName        String?
   ownerRole        String?
+  defaultModelProfiles Json?
+  defaultBudgetPolicy  Json?
+  defaultMemoryPolicy  Json?
+  portableSkillBundle  Json?
+  capabilityRoutes     Json?
+  portablePromotionPolicy Json?
   deployments      TwinDeployment[]
+  memoryPromotions MemoryPromotion[]
   createdAt        DateTime         @default(now())
 }
 
@@ -42,6 +50,8 @@ model TwinDeployment {
   factoryId         String
   digitalTwinId     String
   memoryNamespaceId String?
+  enabledPortableSkills Json?
+  memoryFeatures       Json?
   createdAt         DateTime             @default(now())
   updatedAt         DateTime             @updatedAt
   factory           Factory              @relation(fields: [factoryId], references: [id])
@@ -54,6 +64,49 @@ model TwinDeployment {
   escalations       HitlEscalation[]
   roiMetrics        RoiMetric[]
   roiSnapshots      RoiSnapshot[]
+  memoryNamespaces  MemoryNamespace[]
+  scheduledJobs     ScheduledJob[]
+  memoryPromotions  MemoryPromotion[]
+}
+
+model MemoryNamespace {
+  id                     String   @id
+  deploymentId           String
+  scope                  String
+  searchEnabled          Boolean  @default(true)
+  summaryRefreshSchedule String?
+  createdAt              DateTime @default(now())
+  deployment             TwinDeployment @relation(fields: [deploymentId], references: [id])
+  entries                MemoryEntry[]
+  retrievalEvents        MemoryRetrievalEvent[]
+  promotions             MemoryPromotion[]
+}
+
+model MemoryEntry {
+  id                 String   @id
+  memoryNamespaceId  String
+  entryType          String
+  content            String
+  summaryText        String?
+  sensitivityLevel   String?
+  promotionCandidate Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  memoryNamespace    MemoryNamespace @relation(fields: [memoryNamespaceId], references: [id])
+}
+
+model MemoryRetrievalEvent {
+  id                String   @id
+  deploymentId      String
+  memoryNamespaceId String
+  runId             String?
+  queryText         String
+  matchedEntryIds   Json?
+  retrievalStrategy String?
+  usedInResponse    Boolean?
+  createdAt         DateTime @default(now())
+  deployment        TwinDeployment @relation(fields: [deploymentId], references: [id])
+  memoryNamespace   MemoryNamespace @relation(fields: [memoryNamespaceId], references: [id])
+  run               Run? @relation(fields: [runId], references: [id])
 }
 
 model Conversation {
@@ -200,4 +253,35 @@ model RoiSnapshot {
   dataQualityScore          Float?
   createdAt                 DateTime @default(now())
   deployment                TwinDeployment @relation(fields: [deploymentId], references: [id])
+}
+
+model ScheduledJob {
+  id           String   @id
+  deploymentId String
+  jobType      String
+  schedule     String
+  enabled      Boolean  @default(true)
+  deliveryMode String
+  config       Json?
+  lastRunAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  deployment   TwinDeployment @relation(fields: [deploymentId], references: [id])
+}
+
+model MemoryPromotion {
+  id                String   @id
+  deploymentId      String
+  digitalTwinId     String
+  memoryNamespaceId String?
+  promotionType     String
+  sourceType        String
+  sourceId          String
+  status            String
+  proposedPatch     Json?
+  approvedAt        DateTime?
+  createdAt         DateTime @default(now())
+  deployment        TwinDeployment @relation(fields: [deploymentId], references: [id])
+  digitalTwin       DigitalTwin @relation(fields: [digitalTwinId], references: [id])
+  memoryNamespace   MemoryNamespace? @relation(fields: [memoryNamespaceId], references: [id])
 }

@@ -45,12 +45,14 @@ These may be applied automatically at the deployment level:
 - summary depth defaults
 - model profile selection from an approved list
 - request type routing to predefined capability paths
+- priority tuning among enabled portable skills
 
 ### Review-Gated Improvements
 
 These require explicit human review:
 
 - portable memory updates
+- portable skill promotions
 - identity or persona framing changes
 - capability additions or removals
 - channel exposure changes
@@ -169,6 +171,8 @@ Suggested candidate types:
 - `request_classifier_tuning`
 - `memory_selection_tuning`
 - `portable_memory_promotion_request`
+- `portable_skill_priority_update`
+- `portable_skill_promotion_request`
 
 ## Background Jobs
 
@@ -239,7 +243,20 @@ Responsibilities:
 - require human approval
 - record abstraction and redaction evidence
 
-### 6. HITL Handoff Synthesis Job
+### 6. Memory Summary Refresh Job
+
+Frequency:
+
+- after important runs
+- daily for active deployments
+
+Responsibilities:
+
+- refresh conversation and run summaries used for search
+- keep deployment-local recall compact
+- record retrieval-ready abstractions without changing portable memory
+
+### 7. HITL Handoff Synthesis Job
 
 Frequency:
 
@@ -252,6 +269,18 @@ Responsibilities:
 - summarize the request, current state, and blockers
 - extract open questions for the real human behind the twin
 - prepare a handoff packet for dashboard, email, or Slack delivery
+
+### 8. Scheduled Internal Job Dispatcher
+
+Frequency:
+
+- continuous worker or periodic poll
+
+Responsibilities:
+
+- trigger deployment-defined scheduled jobs
+- keep scoring, review, and promotion workflows durable
+- ensure job output is attached to the deployment audit trail
 
 ## Evaluation Windows
 
@@ -342,7 +371,7 @@ The control plane should show:
 ```yaml
 candidate_id: ic_123
 deployment_id: filip__acme
-candidate_type: prompt_variant_reorder
+candidate_type: portable_skill_priority_update
 risk_level: low
 auto_apply_eligible: true
 trigger_window: 7d
@@ -353,6 +382,11 @@ supporting_evidence:
 expected_metric_impact:
   metric: usefulness_score
   predicted_delta: 0.04
+candidate_patch:
+  capability: architecture_review
+  prioritized_skill_ids:
+    - first-principles
+    - governance-hierarchy-design
 status: proposed
 ```
 
@@ -389,6 +423,7 @@ post_metrics_window: pending
 - deployments regressing this week
 - most common improvement candidate types
 - portable memory promotion requests pending review
+- portable skill promotion requests pending review
 
 ## Questions This System Must Answer
 

@@ -29,6 +29,12 @@ The platform should fetch the package and inspect the required twin files:
 - `twin/output-contracts.md`
 - `twin/memory-policy.md`
 
+If present, the platform should also inspect:
+
+- `portable_skill_bundle` metadata in `twin/digital-twin.yaml`
+- `capability_routes` in `twin/digital-twin.yaml`
+- `portable_promotion_policy` in `twin/digital-twin.yaml`
+
 ## Step 2: Validate Package Contract
 
 The import should fail if:
@@ -40,6 +46,8 @@ The import should fail if:
 - no produced outputs are declared
 - memory policy is incomplete
 - budget defaults are missing
+- a declared capability route references a missing capability
+- a declared capability route references a portable skill not declared in the package manifest
 
 ## Step 3: Register Digital Twin
 
@@ -50,6 +58,12 @@ If validation succeeds, create or update the `digital_twin` record with:
 - twin version
 - source ref
 - imported metadata
+
+The imported `digital_twin` record should also retain:
+
+- portable skill bundle metadata
+- capability route defaults
+- portable promotion policy
 
 No factory-specific memory or settings should be created at this step.
 
@@ -65,6 +79,9 @@ Deployment creation requires:
 - budget policy
 - primary metric
 - review requirements
+- optional enabled portable skills
+- optional memory features
+- optional scheduled jobs
 
 This creates:
 
@@ -88,6 +105,9 @@ Each deployment should also persist:
 - preferred model profile
 - optional fallback model
 - requested human owner id for HITL routing
+- enabled portable skills
+- deployment-local memory search settings
+- scheduled internal jobs for scoring and review
 
 ## Step 6: Start Operating
 
@@ -98,6 +118,7 @@ Once active, the deployment can:
 - execute runs
 - generate artifacts
 - collect feedback
+- search deployment-local summarized memory
 - self-improve locally
 - accumulate rate-of-improvement data
 
@@ -121,6 +142,10 @@ Importing a deployment overlay must not:
 Portable memory promotion is not part of import.
 
 It is a separate reviewed flow that may happen later after deployment operation and improvement review.
+
+Portable skill promotion is also not part of import.
+
+It is a separate reviewed flow that promotes a generalized reusable procedure back into the portable twin package.
 
 ## Suggested Operator Workflow
 

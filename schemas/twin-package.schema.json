@@ -59,6 +59,54 @@
         "factory_memory_exportable": { "type": "boolean" },
         "promotion_requires_review": { "type": "boolean" }
       }
+    },
+    "portable_skill_bundle": {
+      "type": "object",
+      "required": ["bridge_type", "skills"],
+      "properties": {
+        "bridge_type": { "type": "string" },
+        "source_repo": { "type": "string" },
+        "source_ref": { "type": "string" },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["skill_id", "path"],
+            "properties": {
+              "skill_id": { "type": "string" },
+              "path": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "capability_routes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "preferred_skills": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "default_output": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "portable_promotion_policy": {
+      "type": "object",
+      "properties": {
+        "review_required": { "type": "boolean" },
+        "allowed_promotion_types": {
+          "type": "array",
+          "items": {
+            "enum": ["portable_memory_entry", "portable_skill_patch"]
+          }
+        },
+        "promotion_artifact_format": { "type": "string" }
+      }
     }
   }
 }

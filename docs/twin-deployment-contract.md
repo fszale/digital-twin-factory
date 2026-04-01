@@ -41,6 +41,12 @@ Each deployment must define:
 - `review_requirements`
 - `human_handoff`
 
+Recommended Hermes-inspired deployment fields:
+
+- `enabled_portable_skills`
+- `memory_features`
+- `scheduled_jobs`
+
 ## Recommended Deployment Template
 
 ```yaml
@@ -94,6 +100,33 @@ human_handoff:
     - slack
   synthesize_conversation: true
   requested_human_id: filip-owner
+
+enabled_portable_skills:
+  - first-principles
+  - governance-hierarchy-design
+  - 30-60-90-planning
+
+memory_features:
+  session_search: true
+  summary_layers: true
+  retrieval_trace_logging: true
+
+scheduled_jobs:
+  - job_id: score-runs
+    job_type: run_scoring
+    schedule: on_run_complete
+    enabled: true
+    delivery_mode: internal_only
+  - job_id: detect-patterns
+    job_type: pattern_detection
+    schedule: daily
+    enabled: true
+    delivery_mode: internal_only
+  - job_id: review-promotions
+    job_type: portable_promotion_review
+    schedule: weekly
+    enabled: true
+    delivery_mode: dashboard
 ```
 
 ## Required Behavior Rules
@@ -116,6 +149,27 @@ Required rules:
 - factory-scoped memory stays in the deployment namespace
 - factory-scoped data is not exportable by default
 - memory promotion requires review
+
+### Portable Skill Enablement
+
+Deployments may enable only a subset of the portable skill bundle declared by the imported twin package.
+
+Required rules:
+
+- enabled portable skills must be declared by the imported twin package
+- deployment-local routing may prefer one enabled skill over another
+- deployment-local changes do not mutate the portable twin by default
+- portable skill promotion remains review-gated
+
+### Memory Features
+
+Deployments should explicitly control memory behavior beyond simple storage.
+
+Suggested v1 features:
+
+- `session_search`
+- `summary_layers`
+- `retrieval_trace_logging`
 
 ### Channel Exposure
 
@@ -206,10 +260,31 @@ Each deployment must explicitly state review expectations.
 Required review categories:
 
 - portable memory promotion
+- portable skill promotion
 - policy changes
 - channel changes
 - high-cost run exceptions
 - capability definition changes
+
+## Scheduled Jobs
+
+Deployments may define internal scheduled jobs for scoring, review, and promotion workflows.
+
+Recommended v1 job types:
+
+- `run_scoring`
+- `pattern_detection`
+- `safe_improvement_apply`
+- `weekly_improvement_review`
+- `portable_promotion_review`
+- `memory_summary_refresh`
+
+Recommended schedule values:
+
+- `on_run_complete`
+- `daily`
+- `weekly`
+- explicit cron string later
 
 ## Platform Validation Rules
 
@@ -222,6 +297,7 @@ The platform should reject a deployment if:
 - no budget policy is defined
 - no primary metric is defined
 - no enabled channel is defined
+- an enabled portable skill is not declared by the imported twin package
 
 ## Suggested Naming Rules
 
@@ -244,8 +320,11 @@ That means:
 - retrieval tuning belongs to the deployment
 - usefulness scoring belongs to the deployment
 - improvement candidates belong to the deployment
+- portable skill priority and local capability routing belong to the deployment
 
 Portable memory promotion is a separate reviewed step.
+
+Portable skill promotion is also a separate reviewed step.
 
 HITL escalation summaries belong to the deployment and factory context, not to portable twin memory by default.
 
@@ -254,6 +333,7 @@ HITL escalation summaries belong to the deployment and factory context, not to p
 When a twin leaves a factory, the deployment may export:
 
 - approved portable memory updates
+- approved portable skill patches
 - deployment metadata if allowed
 - high-level performance summaries if allowed
 

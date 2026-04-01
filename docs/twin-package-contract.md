@@ -22,6 +22,12 @@ Every twin package must provide:
 5. memory policy
 6. default budget and model policy
 
+Recommended for bridge-style twins such as `digital-twin-filip`:
+
+7. portable skill bundle metadata
+8. capability-to-skill routing metadata
+9. portable promotion policy
+
 ## Required Files
 
 The platform should expect these paths in a twin package repository:
@@ -57,6 +63,12 @@ Required fields:
 - `default_model_profiles`
 - `default_budget_policy`
 - `memory_policy`
+
+Recommended bridge fields:
+
+- `portable_skill_bundle`
+- `capability_routes`
+- `portable_promotion_policy`
 
 Suggested v1 structure:
 
@@ -103,6 +115,26 @@ default_budget_policy:
 memory_policy:
   portable_memory_exportable: true
   factory_memory_exportable: false
+portable_skill_bundle:
+  bridge_type: agent_kernel
+  source_repo: github.com/fszale/agent-kernel
+  source_ref: main
+  skills:
+    - skill_id: first-principles
+      path: skills/first-principles/SKILL.md
+    - skill_id: governance-hierarchy-design
+      path: skills/governance-hierarchy-design/SKILL.md
+capability_routes:
+  architecture_review:
+    preferred_skills:
+      - first-principles
+      - governance-hierarchy-design
+    default_output: markdown_report
+portable_promotion_policy:
+  review_required: true
+  allowed_promotion_types:
+    - portable_memory_entry
+    - portable_skill_patch
 ```
 
 ## Capabilities Document
@@ -116,6 +148,37 @@ memory_policy:
 - areas requiring careful review
 
 This is used for discovery and operator onboarding.
+
+## Portable Skill Bundle
+
+`portable_skill_bundle` allows a twin package to declare reusable procedural assets that travel with the portable twin.
+
+This is the preferred bridge point for `digital-twin-filip` to reference `agent-kernel` skills without copying factory-specific runtime state into the package.
+
+Suggested fields:
+
+- `bridge_type`
+- `source_repo`
+- `source_ref`
+- `skills`
+
+Each listed skill should declare:
+
+- `skill_id`
+- `path`
+- optional `description`
+
+## Capability Routes
+
+`capability_routes` define which portable skills are preferred for a declared capability.
+
+This lets the package declare:
+
+- which portable skills best support a capability
+- which output shape is the default for that capability
+- which routing defaults may travel across factories
+
+Deployments may enable only a subset of those skills and may tune routing locally.
 
 ## Input Contracts
 
@@ -168,6 +231,26 @@ Required policy statements:
 - factory-scoped data may not be exported by default
 - promotion of learning from factory data requires abstraction and approval
 
+## Portable Promotion Policy
+
+`portable_promotion_policy` defines what reviewed learnings may become part of the portable twin.
+
+Suggested fields:
+
+- `review_required`
+- `allowed_promotion_types`
+- `promotion_artifact_format`
+
+Suggested v1 promotion types:
+
+- `portable_memory_entry`
+- `portable_skill_patch`
+
+This is the key bridge concept:
+
+- deployment-local learning stays in the factory by default
+- reviewed generalized behavior may be promoted back into the portable twin as either memory or a reusable skill patch
+
 ## Budget and Model Defaults
 
 The twin package should provide default guidance, not final authority.
@@ -194,6 +277,8 @@ The platform should reject import if:
 - no produced output types are declared
 - memory policy is missing
 - default budget policy is missing
+- a declared capability route references an undeclared capability
+- a declared capability route references an unknown portable skill
 
 ## Versioning Rules
 

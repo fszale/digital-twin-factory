@@ -80,6 +80,41 @@
         "requested_human_id": { "type": "string" },
         "response_sla_hours": { "type": "number", "minimum": 0 }
       }
+    },
+    "enabled_portable_skills": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "memory_features": {
+      "type": "object",
+      "properties": {
+        "session_search": { "type": "boolean" },
+        "summary_layers": { "type": "boolean" },
+        "retrieval_trace_logging": { "type": "boolean" }
+      }
+    },
+    "scheduled_jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["job_id", "job_type", "schedule", "enabled", "delivery_mode"],
+        "properties": {
+          "job_id": { "type": "string" },
+          "job_type": {
+            "enum": [
+              "run_scoring",
+              "pattern_detection",
+              "safe_improvement_apply",
+              "weekly_improvement_review",
+              "portable_promotion_review",
+              "memory_summary_refresh"
+            ]
+          },
+          "schedule": { "type": "string" },
+          "enabled": { "type": "boolean" },
+          "delivery_mode": { "enum": ["internal_only", "dashboard", "slack", "email"] }
+        }
+      }
     }
   }
 }

@@ -91,13 +91,18 @@ Response:
   "manifestVersion": "1.0",
   "twinVersion": "0.1.0",
   "analysisOnly": true,
+  "portableSkillCount": 6,
   "status": "imported"
 }
 ```
 
 #### `GET /api/twins/:digitalTwinId`
 
-Return twin manifest metadata and package summary.
+Return twin manifest metadata, package summary, portable skill bundle summary, and capability routes.
+
+#### `GET /api/twins/:digitalTwinId/portable-skills`
+
+Return the portable skill bundle declared by the twin package.
 
 ### Twin Deployments
 
@@ -126,6 +131,32 @@ Request body:
     "fallbackProvider": "openai",
     "fallbackModel": "chatgpt-default"
   },
+  "enabledPortableSkills": [
+    "first-principles",
+    "governance-hierarchy-design",
+    "30-60-90-planning"
+  ],
+  "memoryFeatures": {
+    "sessionSearch": true,
+    "summaryLayers": true,
+    "retrievalTraceLogging": true
+  },
+  "scheduledJobs": [
+    {
+      "jobId": "score-runs",
+      "jobType": "run_scoring",
+      "schedule": "on_run_complete",
+      "enabled": true,
+      "deliveryMode": "internal_only"
+    },
+    {
+      "jobId": "review-promotions",
+      "jobType": "portable_promotion_review",
+      "schedule": "weekly",
+      "enabled": true,
+      "deliveryMode": "dashboard"
+    }
+  ],
   "budgetPolicy": {
     "dailyTokenLimit": 300000,
     "maxCostPerDay": 25.0,
@@ -156,6 +187,18 @@ Return runtime deployment config including preferred model provider/model and ch
 #### `PATCH /api/factories/:factoryId/deployments/:deploymentId/config`
 
 Upsert the runtime deployment config used by the control plane.
+
+#### `GET /api/factories/:factoryId/deployments/:deploymentId/memory/features`
+
+Return deployment-local memory search and retrieval settings.
+
+#### `PATCH /api/factories/:factoryId/deployments/:deploymentId/memory/features`
+
+Update deployment-local memory search and retrieval settings.
+
+#### `GET /api/factories/:factoryId/deployments/:deploymentId/memory/search`
+
+Search deployment-local summarized memory with retrieval provenance.
 
 ### Conversations
 
@@ -196,6 +239,20 @@ List runs for a job.
 #### `GET /api/runs/:runId`
 
 Return run details including metrics and artifacts.
+
+### Scheduled Jobs
+
+#### `GET /api/factories/:factoryId/deployments/:deploymentId/scheduled-jobs`
+
+List scheduled internal jobs for a deployment.
+
+#### `POST /api/factories/:factoryId/deployments/:deploymentId/scheduled-jobs`
+
+Create a scheduled internal job for scoring, review, or promotion workflows.
+
+#### `PATCH /api/scheduled-jobs/:scheduledJobId`
+
+Pause, resume, or update a scheduled internal job.
 
 ### HITL Escalations
 
@@ -281,6 +338,10 @@ Request body:
 
 List improvement candidates and events.
 
+#### `GET /api/factories/:factoryId/deployments/:deploymentId/promotions`
+
+List portable memory and portable skill promotion requests.
+
 #### `GET /api/factories/:factoryId/deployments/:deploymentId/metrics/roi`
 
 Return rate-of-improvement data.
@@ -308,6 +369,7 @@ The API must reject requests when:
 - daily budget would be exceeded
 - channel is not enabled for the deployment
 - twin import contract is incomplete
+- an enabled portable skill is not declared by the imported twin package
 
 ## Background Job Triggers
 
@@ -319,7 +381,7 @@ These API actions should enqueue background work:
 - run completed or escalation triggered -> enqueue conversation summary synthesis
 - escalation created -> enqueue notification delivery
 - scoring completed -> enqueue pattern detection when needed
-- reviewed promotion approved -> enqueue portable memory update
+- reviewed promotion approved -> enqueue portable memory update or portable skill patch application
 
 ## V1 Exclusions
 

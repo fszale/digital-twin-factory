@@ -96,6 +96,9 @@ Suggested fields:
 - `default_model_profiles`
 - `default_budget_policy`
 - `default_memory_policy`
+- `portable_skill_bundle`
+- `capability_routes`
+- `portable_promotion_policy`
 
 ### `twin_deployment`
 
@@ -120,6 +123,8 @@ Suggested fields:
 - `enabled_channels`
 - `allowed_models`
 - `model_preferences`
+- `enabled_portable_skills`
+- `memory_features`
 - `daily_token_limit`
 - `max_cost_per_day`
 - `primary_metric_name`
@@ -186,6 +191,8 @@ Suggested fields:
 - `max_cost_per_day`
 - `alert_at_pct`
 - `requested_human_id`
+- `enabled_portable_skills`
+- `memory_features`
 
 ### `conversation`
 
@@ -336,6 +343,8 @@ Suggested fields:
 - `retention_policy`
 - `export_policy`
 - `redaction_policy`
+- `search_enabled`
+- `summary_refresh_schedule`
 
 ### `memory_entry`
 
@@ -355,6 +364,27 @@ Suggested fields:
 - `sensitivity_level`
 - `promotion_candidate`
 - `expires_at`
+- `summary_text`
+- `retrieval_tags`
+
+### `memory_retrieval_event`
+
+Audit record for deployment-local memory search and recall.
+
+Required fields:
+
+- `memory_retrieval_event_id`
+- `deployment_id`
+- `memory_namespace_id`
+- `query_text`
+- `created_at`
+
+Suggested fields:
+
+- `run_id`
+- `matched_entry_ids`
+- `retrieval_strategy`
+- `used_in_response`
 
 ### `feedback_event`
 
@@ -480,6 +510,8 @@ Suggested fields:
 - `expected_metric_impact`
 - `auto_apply_eligible`
 - `supporting_evidence`
+- `candidate_patch`
+- `promotion_target`
 
 ### `improvement_event`
 
@@ -500,6 +532,47 @@ Suggested fields:
 - `rolled_back_at`
 - `pre_metrics`
 - `post_metrics`
+
+### `scheduled_job`
+
+Deployment-local scheduled workflow definition for scoring, review, and promotion work.
+
+Required fields:
+
+- `scheduled_job_id`
+- `deployment_id`
+- `job_type`
+- `schedule`
+- `enabled`
+- `created_at`
+
+Suggested fields:
+
+- `delivery_mode`
+- `last_run_at`
+- `next_run_at`
+- `config`
+
+### `memory_promotion`
+
+Reviewed promotion proposal that may update the portable twin.
+
+Required fields:
+
+- `memory_promotion_id`
+- `deployment_id`
+- `digital_twin_id`
+- `promotion_type`
+- `status`
+- `created_at`
+
+Suggested fields:
+
+- `memory_namespace_id`
+- `source_type`
+- `source_id`
+- `proposed_patch`
+- `approved_at`
 
 ### `roi_metric`
 
@@ -559,6 +632,8 @@ twin_deployment -> conversation_summary
 twin_deployment -> hitl_escalation
 twin_deployment -> improvement_candidate
 twin_deployment -> improvement_event
+twin_deployment -> scheduled_job
+twin_deployment -> memory_promotion
 twin_deployment -> roi_metric
 twin_deployment -> roi_snapshot
 conversation -> message
@@ -569,6 +644,7 @@ run -> artifact
 run -> conversation_summary
 run -> usage_event
 memory_namespace -> memory_entry
+memory_namespace -> memory_retrieval_event
 approval -> job | run | improvement_candidate | memory_promotion
 hitl_escalation -> notification_delivery
 ```
@@ -588,6 +664,8 @@ Factory-specific data belongs in:
 - `artifact`
 - `memory_namespace`
 - `memory_entry`
+- `memory_retrieval_event`
+- `scheduled_job`
 
 Portable twin metadata may be exported.
 
@@ -595,7 +673,7 @@ Factory-scoped data may not be exported without explicit redaction and approval.
 
 ### Deployment-Local Improvement
 
-Self-improvement changes should attach to `twin_deployment`, not directly to `digital_twin`, unless a reviewed portable memory promotion is approved.
+Self-improvement changes should attach to `twin_deployment`, not directly to `digital_twin`, unless a reviewed portable memory promotion or portable skill patch is approved.
 
 ## Suggested Status Enums
 
