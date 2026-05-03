@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CheckCircle2, Factory } from "lucide-react";
 import { motion } from "framer-motion";
 
-const BOOKING_URL = "https://solidcage.com/book";
+const BOOKING_URL = "https://crm.solidcage.com/widget/bookings/filip-szalewicz-fractional-cto-calendar-vfs0lblxh";
 const REDIRECT_DELAY_MS = 2500;
 
 export default function Intake() {
@@ -180,7 +180,7 @@ export default function Intake() {
               Submit & Book Your Session
             </Button>
             <p className="text-center text-xs text-muted-foreground">
-              Submitting takes you straight to <span className="font-mono">solidcage.com/book</span>. Your context is saved locally so you can edit and resubmit.
+              Submitting takes you straight to <span className="font-mono">crm.solidcage.com</span>. Your context is saved locally so you can edit and resubmit.
             </p>
           </form>
         </CardContent>
