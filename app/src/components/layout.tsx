@@ -40,7 +40,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-4">
             <Button asChild variant="default" size="sm" className="font-mono">
-              <a href="https://solidcage.com/book" target="_blank" rel="noreferrer">
+              <a href="https://crm.solidcage.com/widget/bookings/filip-szalewicz-fractional-cto-calendar-vfs0lblxh" target="_blank" rel="noreferrer">
                 Book Session
               </a>
             </Button>
