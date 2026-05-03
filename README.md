@@ -18,7 +18,7 @@ The same deployment also serves the sister artifacts referenced below at sub-pat
 | The ROI of AI Employees (deck) | `<DEPLOY_URL>/decks/roi-ai-employees` |
 | Digital Twin Factories (deck) | `<DEPLOY_URL>/decks/digital-twin-factories` |
 
-**Book a session:** [solidcage.com/book](https://solidcage.com/book)
+**Book a session:** [Book a session](https://crm.solidcage.com/widget/bookings/filip-szalewicz-fractional-cto-calendar-vfs0lblxh)
 
 ## What is an "Agent Factory"?
 
