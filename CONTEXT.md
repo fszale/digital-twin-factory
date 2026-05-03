@@ -109,7 +109,7 @@ digital-twin-factory/
 
 ## Production environment
 
-The portal is deployed on Replit and is published at the `solidcage`-adjacent demo URL. The "Book a Free Session" CTA on every page links to <https://solidcage.com/book>. The GitHub URL of the live deployment is referenced from the app's footer and from `README.md`.
+The portal is deployed on Replit and is published at the `solidcage`-adjacent demo URL. The "Book a Free Session" CTA on every page links to <https://crm.solidcage.com/widget/bookings/filip-szalewicz-fractional-cto-calendar-vfs0lblxh>. The GitHub URL of the live deployment is referenced from the app's footer and from `README.md`.
 
 ## Out of scope (do not add)
 
